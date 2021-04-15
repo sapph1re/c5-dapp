@@ -2,10 +2,6 @@ import React from 'react';
 import getWeb3 from './utils/getWeb3';
 import ForestContract from '../build/contracts/Forest.json';
 import AdminPanel from './AdminPanel';
-import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import BuildIcon from '@material-ui/icons/Build';
 
 import './css/oswald.css'
 import './App.css'
@@ -198,40 +194,23 @@ class App extends React.Component {
       return this.renderMessage('Getting user account... Make sure you are logged in with MetaMask.');
     }
     if (!this.state.contract) {
-      return this.renderMessage('Connecting to the contracts... It may take a while, please be patient.');
+      return this.renderMessage('Connecting to the contracts...');
     }
     return (
       <div className="App">
-        <Paper square>
-          <Tabs
-            value={this.state.activeTab}
-            onChange={this.switchTab}
-            fullWidth
-            centered
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            <Tab icon={<BuildIcon />} label="Admin Panel" value={0} />
-          </Tabs>
-        </Paper>
-
         <div className="current-account">
           Account: {this.state.account}
         </div>
 
         <main className="container">
-
-          {this.state.activeTab === 0 && (
-            <AdminPanel
-              records={this.state.records}
-              setRecords={this.setRecords}
-              web3={this.state.web3}
-              contract={this.state.contract}
-              account={this.state.account}
-              ipfs={this.state.ipfs}
-            />
-          )}
-
+          <AdminPanel
+            records={this.state.records}
+            setRecords={this.setRecords}
+            web3={this.state.web3}
+            contract={this.state.contract}
+            account={this.state.account}
+            ipfs={this.state.ipfs}
+          />
         </main>
       </div>
     );
