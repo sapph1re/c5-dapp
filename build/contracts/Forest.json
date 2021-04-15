@@ -6547,19 +6547,6 @@
     "version": "0.8.0+commit.c7dfd78e.Emscripten.clang"
   },
   "networks": {
-    "5777": {
-      "events": {
-        "0x96ff4d1a0a02d8a16f5f2569c1bd1172f3e60b98d526e01226abca6b797dbde2": {
-          "anonymous": false,
-          "inputs": [],
-          "name": "LogRecordAdded",
-          "type": "event"
-        }
-      },
-      "links": {},
-      "address": "0xfEd94d3d7274A4bb926DF70C0458D53281eF6741",
-      "transactionHash": "0x2fda8fc8695d599e8fbb964072dd80003ca6b11744993994f1c073b44c0f2ce8"
-    },
     "1618490795276": {
       "events": {
         "0x96ff4d1a0a02d8a16f5f2569c1bd1172f3e60b98d526e01226abca6b797dbde2": {
@@ -6570,12 +6557,12 @@
         }
       },
       "links": {},
-      "address": "0xA26efFd71749A34721ce8234A8207599E630F33d",
-      "transactionHash": "0xa33268f9f0f124222bf7e9c2e18467fd226490402e952b8db1878b44bb2f28d2"
+      "address": "0x1888Fb4849DDb8D4562B07c72417E5ff0f90beeB",
+      "transactionHash": "0x895c25092fcaab02663366b5d65feaf3aae51c6bfc6f684c62ed6d9388fa6986"
     }
   },
   "schemaVersion": "3.3.3",
-  "updatedAt": "2021-04-15T13:07:53.216Z",
+  "updatedAt": "2021-04-15T16:43:55.342Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Roman Vinogradov <dev.romanv@gmail.com>",
