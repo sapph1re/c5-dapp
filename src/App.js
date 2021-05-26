@@ -1,5 +1,6 @@
 import React from 'react';
 import getWeb3 from './utils/getWeb3';
+import SwitchButton from './SwitchButton';
 import ForestContract from '../build/contracts/Forest.json';
 import AdminPanel from './AdminPanel';
 
@@ -8,6 +9,79 @@ import './App.css'
 
 
 const GPSmult = 100000000;
+
+const CHAIN_ID = "304";
+
+
+const CHAIN_PARAMS = {
+  chainId: '0x'+parseInt(CHAIN_ID).toString(16),
+  chainName: 'C5V Network',
+  nativeCurrency: {
+    name: 'C5V',
+    symbol: 'C5V',
+    decimals: 18
+  },
+  rpcUrls: ['https://rpc.c5v.network'],
+  blockExplorerUrls: null
+}
+
+const mainButtonStyle = 
+{
+  margin: '20px',
+  width: "300px",
+  borderRadius: '5px'
+};
+
+const modalBackgroundStyle = {
+  position: 'fixed',
+  top: '0',
+  left: '0',
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.3)' 
+};
+
+const modalStyle = {
+  margin: 'auto',
+  position: 'absolute',
+  top: '0', left: '0', bottom: '0', right: '0',
+  width:'350px',
+  height: '200px',
+  background:'white',
+  borderRadius: '10px'
+};
+
+const buttonModalStyle = {
+  margin: 'auto',
+  position: 'absolute',
+  top: '0px', left: '0', bottom: '0', right: '0',
+  width: "250px",
+  borderRadius: '13px'
+  
+};
+
+const loadingModalStyle = {
+  margin: 'auto',
+  position: 'absolute',
+  top: '0px', left: '0', bottom: '0', right: '0',
+  width: "250px",
+  size: '150%',
+  borderRadius: '13px',
+  
+  
+};
+
+const errorModalStyle ={
+  margin: 'auto',
+  position: 'absolute',
+  top: '-90px', left: '0', bottom: '0', right: '0',
+  textAlign: 'center',
+  width:'350px',
+  height: '50px',
+  color: 'red',
+  borderRadius: '10px'
+}
+
 
 
 class App extends React.Component {
@@ -49,10 +123,19 @@ class App extends React.Component {
       });
   }
 
+  checkChainChange(){
+    const ethereum = window.ethereum;
+    if (ethereum) {
+      ethereum.on('chainChanged', chainId => {
+        this.setState({ networkId: chainId })
+      })
+    }
+  }
+
   init() {
     // Instantiate the contract
     console.log('Network ID: ', this.state.networkId);
-    let contractAddress = ForestContract.networks[this.state.networkId].address;
+    let contractAddress = ForestContract.networks[CHAIN_ID].address;
     const forest = new this.state.web3.eth.Contract(ForestContract.abi, contractAddress);
     console.log(forest);
 
@@ -185,11 +268,7 @@ class App extends React.Component {
     if (!this.state.web3) {
       return this.renderMessage('Waiting for web3...');
     }
-    // Make sure the user does not accidentially spend real ETH here
-    // Remove this block in production
-    if (this.state.networkType === 'main') {
-      return this.renderMessage('You are connected to Ethereum mainnet! You should switch to our private network.');
-    }
+    this.checkChainChange();
     if (!this.state.account) {
       return this.renderMessage('Getting user account... Make sure you are logged in with MetaMask.');
     }
@@ -198,9 +277,18 @@ class App extends React.Component {
     }
     return (
       <div className="App">
-        <div className="current-account">
-          Account: {this.state.account}
-        </div>
+        <SwitchButton 
+          currentNetwork={Number(this.state.networkId)}
+          requiredNetwork={Number(CHAIN_PARAMS.chainId)}
+          chainParams = {CHAIN_PARAMS}
+          mainButtonStyle = {mainButtonStyle}
+          modalBackgroundStyle = {modalBackgroundStyle}
+          modalStyle = {modalStyle}
+          buttonModalStyle = {buttonModalStyle}
+          loadingModalStyle = {loadingModalStyle}
+          errorModalStyle = {errorModalStyle}
+          color = "#3f51b5"
+        />
 
         <main className="container">
           <AdminPanel
