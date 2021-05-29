@@ -210,7 +210,6 @@ class App extends React.Component {
     if (!this.state.account) {
       return this.renderMessage('Getting user account... Make sure you are logged in with MetaMask.');
     }
-    this.checkChainChange();
     if (!this.state.contract) {
       return this.renderMessage('Connecting to the contracts...');
     }
