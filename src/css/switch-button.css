@@ -1,5 +1,22 @@
-.modal-appear{
-    color:red;
-    margin: auto;
-    width:600px;
+.button{
+  transition:0.2s;
+  margin: 20px;
+  line-height: 45px;
+  width:calc(100% - 40px);
+  max-width: 300px;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #3f51b5;
+  font-weight: 600;
+  color: white;
+  height: 45px;
+  padding-top: 0px;
+  vertical-align:middle;
+  align-items: center;
+  text-align: center;
+  border:none;
+  cursor:pointer;
+}
+.button:hover{
+box-shadow:3px 3px 10px #00000050
 }

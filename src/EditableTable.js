@@ -34,6 +34,11 @@ const CustomTableCell = withStyles(theme => ({
     fontSize: 14
   },
   body: {
+    wordBreak: 'break-word',
+    paddingTop: '20px',
+    paddingBottom: '13px',
+    paddingLeft: '5px',
+    paddingRight: '5px',
     fontSize: 15
   }
 }))(TableCell);
@@ -79,14 +84,13 @@ class EditableTable extends React.Component {
    */
   renderEditableField(dataColumn, dataRow, rowIdx) {
     const { editIdx, dataErrors, handleChange } = this.props;
-
     let value = dataRow[dataColumn.prop];
     switch (dataColumn.type) {
       case 'datetime':
         value = formatDate(value);
         break;
-      case 'custom':
-      case 'text':
+      case 'custom': break;
+      case 'text': break;
       default:
         if (typeof(value) !== 'undefined') {
           value = value.toString();
@@ -96,8 +100,8 @@ class EditableTable extends React.Component {
     if (dataColumn.editable && editIdx === rowIdx) {
       if (dataColumn.type === 'custom') {
         return dataColumn.renderEditField(value);
-      } else {
-        return (
+      }
+      return (
           <TextField
             name={dataColumn.prop}
             value={value}
@@ -108,14 +112,12 @@ class EditableTable extends React.Component {
             fullWidth={true}
           />
         );
-      }
-    } else {
+    }
       if (dataColumn.type === 'custom') {
         return dataColumn.renderField(value);
-      } else {
-        return value;
       }
-    }
+      return value;
+    
   };
 
   /** Render buttons "edit", "remove", "save", "cancel" depending on the mode */
@@ -156,7 +158,6 @@ class EditableTable extends React.Component {
   /** Render the table body with all the data, editable data fields and action buttons */
   renderTableBody() {
     const { data, dataStructure } = this.props;
-
     return data.map((dataRow, rowIdx) => {
       if (dataRow.inProgress) {
         return (
@@ -165,7 +166,7 @@ class EditableTable extends React.Component {
             className="row-disabled"
           >
             {dataStructure.map((dataColumn, columnIdx) => (
-              <CustomTableCell key={`trc-${columnIdx}`}>
+              <CustomTableCell key={`trc-${columnIdx}`}  >
                 {columnIdx === 0 ? <CircularProgress size={20} /> : null}
                 {dataColumn.type === 'custom'
                   ? dataColumn.renderField(dataRow[dataColumn.prop])
