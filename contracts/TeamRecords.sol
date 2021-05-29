@@ -15,7 +15,7 @@ contract TeamRecords {
     /**
      * @dev Record:
      * {rTime} - timestamp of the record
-     * {rPhoto} - PFS hash of the photo
+     * {rFile} - IPFS hash of the photo + FileType enum
      * {rLat, rLon} - GPS coordinates of the plant multiplied by 100000000
      */
     struct Record {
