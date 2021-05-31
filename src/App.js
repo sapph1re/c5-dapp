@@ -1,7 +1,7 @@
 import React from 'react';
 import getWeb3 from './utils/getWeb3';
-import SwitchButton from './SwitchButton';
-import ForestContract from '../build/contracts/Forest.json';
+import SwitchButton from './SwitchButton.js';
+import TeamRecordsContract from '../build/contracts/TeamRecords.json';
 import AdminPanel from './AdminPanel';
 
 import './css/oswald.css'
@@ -10,8 +10,9 @@ import './App.css'
 
 const GPSmult = 100000000;
 
-const CHAIN_ID = "304";
+const CHAIN_ID = "304"
 
+const fileTypes = ['Photo', 'Text', 'Audio', 'Video'] //enums are cast as numbers in solidity, so I get the index of the item in the array
 
 const CHAIN_PARAMS = {
   chainId: '0x'+parseInt(CHAIN_ID).toString(16),
@@ -21,67 +22,9 @@ const CHAIN_PARAMS = {
     symbol: 'C5V',
     decimals: 18
   },
-  rpcUrls: ['https://rpc.c5v.network'],
+  rpcUrls:['https://rpc.c5v.network'],
   blockExplorerUrls: null
 }
-
-const mainButtonStyle = 
-{
-  margin: '20px',
-  width: "300px",
-  borderRadius: '5px'
-};
-
-const modalBackgroundStyle = {
-  position: 'fixed',
-  top: '0',
-  left: '0',
-  width: '100%',
-  height: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.3)' 
-};
-
-const modalStyle = {
-  margin: 'auto',
-  position: 'absolute',
-  top: '0', left: '0', bottom: '0', right: '0',
-  width:'350px',
-  height: '200px',
-  background:'white',
-  borderRadius: '10px'
-};
-
-const buttonModalStyle = {
-  margin: 'auto',
-  position: 'absolute',
-  top: '0px', left: '0', bottom: '0', right: '0',
-  width: "250px",
-  borderRadius: '13px'
-  
-};
-
-const loadingModalStyle = {
-  margin: 'auto',
-  position: 'absolute',
-  top: '0px', left: '0', bottom: '0', right: '0',
-  width: "250px",
-  size: '150%',
-  borderRadius: '13px',
-  
-  
-};
-
-const errorModalStyle ={
-  margin: 'auto',
-  position: 'absolute',
-  top: '-90px', left: '0', bottom: '0', right: '0',
-  textAlign: 'center',
-  width:'350px',
-  height: '50px',
-  color: 'red',
-  borderRadius: '10px'
-}
-
 
 
 class App extends React.Component {
@@ -135,10 +78,8 @@ class App extends React.Component {
   init() {
     // Instantiate the contract
     console.log('Network ID: ', this.state.networkId);
-    let contractAddress = ForestContract.networks[CHAIN_ID].address;
-    const forest = new this.state.web3.eth.Contract(ForestContract.abi, contractAddress);
-    console.log(forest);
-
+    let contractAddress = TeamRecordsContract.networks[CHAIN_ID].address;
+    const TeamRecords = new this.state.web3.eth.Contract(TeamRecordsContract.abi, contractAddress);
     // Initialize IPFS interface
     const IPFS = require('ipfs-api');
     const ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -167,8 +108,8 @@ class App extends React.Component {
       }, 500);
 
       // Save the instance of the contract
-      this.setState(
-        { contract: forest },
+     this.setState(
+        { contract: TeamRecords },
         () => {
           // Load the list of records from the contract
           this.loadRecords().then(result => {
@@ -234,12 +175,9 @@ class App extends React.Component {
       results.forEach(row => {
         records.push({
           rTime: row[0].toString(),
-          rTribe: row[1],
-          rFamily: row[2],
-          rCoffeeTrees: row[3].toString(),
-          rPhoto: row[4],
-          rLat: (row[5]/GPSmult).toFixed(8),
-          rLon: (row[6]/GPSmult).toFixed(8),
+          rFile: { hash: row[1].IPFS, type: fileTypes[row[1].fileType]},
+          rLat: (row[2]/GPSmult).toFixed(8),
+          rLon: (row[3]/GPSmult).toFixed(8),
           inProgress: false
         });
       });
@@ -265,7 +203,7 @@ class App extends React.Component {
   );
 
   render() {
-    if (!this.state.web3) {
+   if (!this.state.web3) {
       return this.renderMessage('Waiting for web3...');
     }
     this.checkChainChange();
@@ -277,17 +215,9 @@ class App extends React.Component {
     }
     return (
       <div className="App">
-        <SwitchButton 
-          currentNetwork={Number(this.state.networkId)}
-          requiredNetwork={Number(CHAIN_PARAMS.chainId)}
-          chainParams = {CHAIN_PARAMS}
-          mainButtonStyle = {mainButtonStyle}
-          modalBackgroundStyle = {modalBackgroundStyle}
-          modalStyle = {modalStyle}
-          buttonModalStyle = {buttonModalStyle}
-          loadingModalStyle = {loadingModalStyle}
-          errorModalStyle = {errorModalStyle}
-          color = "#3f51b5"
+        <SwitchButton
+          networkId={CHAIN_ID}
+          chainParams={CHAIN_PARAMS}
         />
 
         <main className="container">

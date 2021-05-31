@@ -3,11 +3,14 @@ import RecordForm from "./RecordForm";
 import EditableTable from "./EditableTable";
 import Grid from '@material-ui/core/Grid';
 import Map from './Map';
+import ReactAudioPlayer from 'react-audio-player';
+import ModalImage from "react-modal-image";
 
 const ipfsGatewayPrefix = 'https://ipfs.io/ipfs/';
 
 const GPSmult = 100000000;
 
+const fileTypes = ['Photo', 'Text', 'Audio', 'Video'] //enums are cast as numbers in solidity, so I get the index of the item in the array
 /**
  * A list of records with a form to add a new record and edit/remove functionality
  * @param records - list of records
@@ -19,8 +22,7 @@ const GPSmult = 100000000;
  */
 class AdminPanel extends React.Component {
   constructor(props) {
-    super(props);
-
+    super(props)
     this.state = {
       // the index of the row that's being edited right now, -1 means none are edited
       editRecordIdx: -1,
@@ -28,20 +30,19 @@ class AdminPanel extends React.Component {
       editRecordErrors: {},
       // saved version of an record before editing, to restore the values on cancel
       recordBeforeEditing: null,
-      editRecordPhotoFile: '',
+      editRecordFile: '',
       isEditUploading: false,
       isContractPaused: false,
       isPausing: false,
       isUnpausing: false
-    };
-
-    this.editRecordPhotoInput = React.createRef();
+    }
+    this.editRecordInput = React.createRef()
   }
 
   /**
    * Validate the input before an record is added/changed.
    * This function is made asynchronous because it may execute a contract call,
-   * and contract calls must not be executed synchronously.
+   * and contract calls must be executed asynchronously.
    * @param {object} record - object containing record data: rName, rOwner
    * @return {Promise} - promise that will resolve to an object of errors; empty object means no errors
    */
@@ -62,21 +63,15 @@ class AdminPanel extends React.Component {
     this.props.setRecords(
       [...this.props.records, {
         rTime: null,
-        rTribe: record.rTribe,
-        rFamily: record.rFamily,
-        rCoffeeTrees: record.rCoffeeTrees,
-        rPhoto: record.rPhoto,
+        rFile: { hash: record.rFile.hash, type: record.rFile.type },
         rLat: record.rLat,
         rLon: record.rLon,
         inProgress: true
       }]
     );
-    // Add the record to the contract
+        // Add the record to the contract
     this.props.contract.methods.addRecord(
-      record.rTribe,
-      record.rFamily,
-      record.rCoffeeTrees,
-      record.rPhoto,
+      { IPFS: record.rFile.hash, fileType:fileTypes.indexOf(record.rFile.type)},
       Math.round(record.rLat*GPSmult),
       Math.round(record.rLon*GPSmult)
     ).send({
@@ -95,36 +90,31 @@ class AdminPanel extends React.Component {
 
   render() {
     var records = this.props.records;
-    if (records.length > 0) {
-      var points = records.map(rec => ({
-          "lat": parseFloat(rec.rLat),
-          "lng": parseFloat(rec.rLon)
-      }));
-    }
+    var points = records.length > 0 ? records.map(rec => ({ "lat": parseFloat(rec.rLat), "lng": parseFloat(rec.rLon) })) : [];
     return (
       <div>
         {/* <h1>Records</h1> */}
-        <Grid container spacing={24}>
-          <Grid item xs={4}>
-            <h2>Add a record</h2>
+        <Grid container >
+          <Grid item xs={12} sm={5}>
+            <h2 style={{ marginLeft: '20px' }}>Add a record</h2>
             <RecordForm
               onValidate={this.recordValidate}
               onSubmit={this.recordSubmit}
               ipfs={this.props.ipfs}
             />
           </Grid>
-          <Grid item xs={8}>
-            {records.length > 0 ?
+          <Grid item xs={12} sm={7}>
               <Map 
-                points={points}
-                style = {{
-                  width: '60%',
-                  height: '500px'
-                }} />
-            :""}
+              points={points}
+              containerStyle={{
+                width: 'calc(100% - 40px)',
+                marginLeft:'20px',
+                height: '425px',
+                position: 'relative',}}
+            />
           </Grid>
-          <Grid item xs={12}>
-            <h2>Records</h2>
+            <Grid item xs={12} >
+            <h2 className='records'>Records</h2>
             <EditableTable
               handleChange={this.onInputChanged}
               handleRemove={this.recordRemove}
@@ -142,31 +132,43 @@ class AdminPanel extends React.Component {
                   type: 'datetime'
                 },
                 {
-                  name: 'Photo',
-                  prop: 'rPhoto',
+                  name: 'File',
+                  prop: 'rFile',
                   editable: false,
                   type: 'custom',
-                  renderField: (value) => (
-                    <img src={ipfsGatewayPrefix + value} className="record-photo" alt="photo" />
-                  )
-                },
-                {
-                  name: 'Tribe',
-                  prop: 'rTribe',
-                  editable: false,
-                  type: 'text'
-                },
-                {
-                  name: 'Family',
-                  prop: 'rFamily',
-                  editable: false,
-                  type: 'text'
-                },
-                {
-                  name: 'Coffee Trees',
-                  prop: 'rCoffeeTrees',
-                  editable: false,
-                  type: 'text'
+                  renderField: (value) => {
+                    return (
+                      <div className='media-container'>
+                        {(() => {
+                          if (value.type === 'Photo') {
+                            return (
+                              <ModalImage
+                                small={ipfsGatewayPrefix + value.hash}
+                                large={ipfsGatewayPrefix + value.hash}
+                                hideZoom
+                                imageBackgroundColor="#ffffff00"
+                                alt=""
+                                className= "preview"
+                              />
+                            )
+                          }
+                          if (value.type === 'Text') {
+                            return (<iframe title="Text File" src={ipfsGatewayPrefix + value.hash} className="preview"></iframe>)
+                          }
+                          if (value.type === 'Audio') {
+                            return (<ReactAudioPlayer src={ipfsGatewayPrefix + value.hash} className="preview" controls />)
+                          }
+                          if (value.type === 'Video') {
+                            return(<video controls src={ipfsGatewayPrefix + value.hash} className="preview">
+                                    Sorry, your browser doesn't support embedded videos,
+                                    but don't worry, you can <a href={ipfsGatewayPrefix + value.hash}>download it</a>
+                                    and watch it with your favorite video player!</video>)
+                          }
+                          return(<div>{value.hash}</div>)
+                      })()}
+                      </div>
+                    )
+                  }
                 },
                 {
                   name: 'Latitude',
@@ -181,7 +183,7 @@ class AdminPanel extends React.Component {
                   type: 'text'
                 },
               ]} />
-          </Grid>
+          </Grid>  
         </Grid>
       </div>
     );

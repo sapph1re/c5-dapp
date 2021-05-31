@@ -2,14 +2,9 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardMedia from '@material-ui/core/CardMedia';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import grey from '@material-ui/core/colors/grey';
 
-const defaultPhotoHash = 'QmQUp8vtD7uAdRudfi6zY5mJ6gtiopUN9sTSNct3Jvi1S8';
-const ipfsGatewayPrefix = 'https://ipfs.io/ipfs/';
+const defaultFile = { hash: 'QmQUp8vtD7uAdRudfi6zY5mJ6gtiopUN9sTSNct3Jvi1S8', type: 'Photo'};
 
 /**
  * A form to create a new Record
@@ -21,20 +16,21 @@ class RecordForm extends React.Component {
     super(props);
     this.state = {
       // input data
-      rTribe: '',
-      rFamily: '',
-      rCoffeeTrees: '',
-      rPhotoHash: defaultPhotoHash,
+      rFile: defaultFile,
+      rFileName:'',
       rLat: '',
       rLon: '',
-      recordPhotoFile: '',
+      recordFile: '',
       // flag when uploading to IPFS
       isUploading: false
     };
-    this.recordPhotoInput = React.createRef();
-    this.updateCoords();
+    this.recordFileInput = React.createRef();
   }
 
+  componentDidMount() {
+    this.updateCoords();
+  }
+  
   updateCoords = () => {
     // input current coordinates into the form
     window.navigator.geolocation.getCurrentPosition(pos => {
@@ -55,8 +51,36 @@ class RecordForm extends React.Component {
   captureFile = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    this.setState({ isUploading: true });
     let file = e.target.files[0];
+    this.setState({ isUploading: true, rFileName: file.name });
+    // Acceptable file types
+    const fileTypes = ['jpg', 'jpeg', 'png', 'txt', 'mp3', 'mp4'];
+    // Get file extention
+    const extension = file.name.split('.').pop().toLowerCase();
+    if (!fileTypes.includes(extension)) {
+      this.setState({
+        isUploading: false,
+        rFileName: '' 
+      })
+      return
+    }
+    
+    const fileType = (extension) => {
+        if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+          return 'Photo'
+        }
+        if (extension === 'mp3') {
+          return 'Audio'
+        }
+        if (extension === 'mp4') {
+          return 'Video'
+        }
+        if (extension === 'txt') {
+          return 'Text'
+        }
+        return 'Photo'
+    }
+
     let reader = new window.FileReader();
     reader.readAsArrayBuffer(file);
     reader.onloadend = async () => {
@@ -65,20 +89,20 @@ class RecordForm extends React.Component {
       // Upload the file to IPFS and save the hash
       this.props.ipfs.add(buffer).then(result => {
         let fileHash = result[0].hash;
-        console.log('Photo uploaded: ', fileHash);
         this.setState({
-          rPhotoHash: fileHash,
+          rFile: { hash: fileHash, type: fileType(extension)},
           isUploading: false
         });
       }).catch(err => {
-        console.log('Failed to upload the photo to IPFS: ', err);
+        console.log('Failed to upload the file to IPFS: ', err);
       })
     };
   };
 
-  removePhoto = () => {
+  removeFile = () => {
     this.setState({
-      rPhotoHash: defaultPhotoHash,
+      rFile: defaultFile,
+      rFileName: '',
       isUploading: false
     });
   }
@@ -92,10 +116,7 @@ class RecordForm extends React.Component {
     });
     // Extract and format the data
     let data = {
-      rTribe: this.state.rTribe.trim(),
-      rFamily: this.state.rFamily.trim(),
-      rCoffeeTrees: this.state.rCoffeeTrees,
-      rPhoto: this.state.rPhotoHash,
+      rFile: this.state.rFile,
       rLat: this.state.rLat,
       rLon: this.state.rLon,
     };
@@ -109,13 +130,10 @@ class RecordForm extends React.Component {
         this.props.onSubmit(data, () => {
           // When done, clear the form
           this.setState({
-            rTribe: '',
-            rFamily: '',
-            rCoffeeTrees: '',
-            rPhotoHash: defaultPhotoHash,
+            rFile: defaultFile,
             rLat: '',
             rLon: '',
-            recordPhotoFile: '',
+            recordFile: '',
           });
           this.updateCoords();
         });
@@ -126,73 +144,35 @@ class RecordForm extends React.Component {
   render() {
     return (
       <form onSubmit={e => this.onSubmit(e)}>
-        <Grid container spacing={24} style={{ width: 300, marginBottom: 50 }}>
+        <Grid container style={{marginLeft: '20px', width:'calc(100% - 40px)', marginBottom: 50}}>
           <Grid item xs={12}>
             <input
               className="record-photo-input"
-              ref={this.recordPhotoInput}
+              ref={this.recordFileInput}
               type="file"
-              value={this.state.recordPhotoFile}
+              value={this.state.recordFile}
               onChange={this.captureFile}
             />
-            <Card className="record-photo-card">
-              {this.state.isUploading ? (
-                <CircularProgress size={50} style={{ color: grey[200] }} className="record-photo-loader" />
+            <div>
+              File:
+              <button
+                type="button"
+                onClick={() => this.recordFileInput.current.click()}
+                style={{ marginLeft: '7px', backgroundColor: '#f2f2f2', border: '1px solid #bbbbbb', height: '21px', paddingTop: '2px', borderRadius: '3px',cursor:'pointer' }}>
+                Choose File
+              </button>
+              {this.state.rFileName!=='' ? (
+                <span
+                  style={{ marginLeft: '5px' }}>
+                  {this.state.rFileName}
+                  <button type="button"
+                    onClick={this.removeFile}
+                    style={{ backgroundColor: 'transparent', border: 'none', color: '#cc0000', padding: '0', marginLeft: '3px', cursor: 'pointer' }}>
+                    &#10006;
+                  </button>
+                </span>
               ) : null}
-              <CardMedia
-                className="record-photo-form-image"
-                image={ipfsGatewayPrefix+this.state.rPhotoHash}
-                title="Record Photo"
-              />
-              <CardActions className="record-photo-actions">
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={() => this.recordPhotoInput.current.click()}
-                  className="record-photo-button"
-                >
-                  Upload Photo
-                </Button>
-                <Button
-                  size="small"
-                  color="primary"
-                  className="record-photo-button"
-                  onClick={this.removePhoto}
-                >
-                  Remove Photo
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="rTribe"
-              placeholder="Tribe"
-              label="Tribe"
-              fullWidth={true}
-              value={this.state.rTribe}
-              onChange={this.change}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="rFamily"
-              placeholder="Family"
-              label="Family"
-              fullWidth={true}
-              value={this.state.rFamily}
-              onChange={this.change}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              name="rCoffeeTrees"
-              placeholder="Number of Coffee Trees"
-              label="Coffee Trees"
-              fullWidth={true}
-              value={this.state.rCoffeeTrees}
-              onChange={this.change}
-            />
+            </div>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -220,9 +200,11 @@ class RecordForm extends React.Component {
               variant="contained"
               color="primary"
               disabled={this.state.isUploading}
-              style={{ marginTop: 7 }}
+              style={{ marginTop: 7, height:'38px' }}
             >
-              Add
+               {this.state.isUploading ? (
+                <CircularProgress size={20} style={{ color: '#606060' }}  />
+              ) : <span>Add</span>}
             </Button>
           </Grid>
         </Grid>
