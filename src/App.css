@@ -9,6 +9,262 @@ body {
 h1, h2, h3 {
   font-family: 'Oswald', 'Arial Narrow', sans-serif;
 }
+.fileIcon{
+font-size:16px;
+  margin-top:1px;
+}
+.fileName{
+  white-space: nowrap;
+  position:absolute;
+  margin-top:14px;
+  margin-left:50px;
+  width:130px;
+  overflow:hidden;
+  font-size:18px;
+  text-overflow:ellipsis;
+}
+.closePhoto{
+   transition:0.2s;
+   z-index:1001;
+   color:white;
+   font-size:30px;
+   right:30px;
+   top:30px;
+  position:absolute;
+  border:none;
+  background-color:transparent;
+}
+.closePhoto:hover{
+ color:rgb(212, 33, 33);
+}
+.outerCircle{
+  height:60px;
+  width:60px;
+  border-radius:50%;
+  border:5px solid white;
+  margin-left:-16px;
+  margin-top:-11px;
+}
+.capturePhoto{
+  transition:0.2s;
+  z-index:1001;
+  bottom:50px;
+  position:absolute;
+  background-color:white;
+  height:50px;
+  width:50px;
+  border:none;
+  border-radius:50%;
+  left:0;
+  margin-left:calc(50% - 25px);
+}
+.capturePhoto:hover{
+background-color:rgb(212, 33, 33);
+}
+.webCamContainer{
+  z-index:1000;
+  top:0;
+  bottom:0;
+  right:0;
+  left:0;
+  position:fixed;
+  background-color:#000000fc;
+}
+.webCam{
+  width:100%;
+  max-height:100%;
+  position:relative;
+  top:50%;
+  transform:translateY(-50%);
+}
+.photoIcon{
+  font-size: 17px;
+  top:0px;
+  margin-left:0px;
+}
+.startRecording {
+  z-index:-1;
+  position: absolute;
+  transform-origin:  25px  25px;
+  animation: .7s rollout cubic-bezier(.15,1.73,.91,.99);
+}
+.blob{
+  position: absolute;
+  margin-left:-31px;
+  margin-top:-31px;
+  animation:spin 4s linear infinite;
+  transform-origin:  55% 53%;
+  animation-fill-mode:forwards;
+}
+.reverse{
+  animation-direction: reverse;
+}
+@keyframes rollout {
+  0% {
+    transform:scale(0.6);
+  }
+  100% {
+    transform:scale(1);
+  }
+}
+@keyframes spin { 100% { transform:scale(0.8) rotate(360deg); } }
+
+.closeButton{
+  transition:0.2s;
+  position: absolute;
+  background-color:transparent;
+  border:none;
+  right:44px;
+  top:61px;
+  font-size:18px;
+  color:#ff4040;
+}
+.closeButton:hover {
+    color: #b32e2e;
+}
+.activeWave{
+  position: absolute;
+  z-index:2;
+  width: calc(100% - 136px);
+  float:left;
+  margin-top:10px;
+  margin-left:53px;
+}
+.Wave{
+ display:none;
+}
+.text-input{
+  display:inline-block;
+  white-space:nowrap;
+  margin-left:10px;
+  height:27px;
+  font-size: 17px;
+  border:none;
+  outline:none;
+  width:calc(100% - 75px);
+  padding-left:10px;
+  border-radius:50px;
+  margin-top:10px;
+}
+.checkPhoto{
+  position:absolute;
+  font-size:20px;
+  margin-left:51px;
+  margin-top:14px;
+  color:#4070FF;
+}
+.activeFileContainer {
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  background: #ddeeff;
+  border-radius:100px;
+  width:185px;
+  margin-left:10px;
+}
+.FileContainer {
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  background: #ddeeff;
+  border-radius:100px;
+  width: 49px;
+  margin-left:10px;
+}
+.activePhotoContainer {
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  background: #ddeeff;
+  border-radius:100px;
+  width:85px;
+  margin-left:10px;
+}
+.PhotoContainer {
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  background: #ddeeff;
+  border-radius:100px;
+  width: 49px;
+  margin-left:10px;
+}
+.activePencilContainer{
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  width: calc(100% - 40px);
+  background: #ddeeff;
+  border-radius:100px;
+  margin-left:10px;
+}
+.PencilContainer {
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  background: #ddeeff;
+  border-radius:100px;
+  width: 49px;
+  margin-left:10px;
+}
+.WaveformContainer{
+  white-space:nowrap;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  width: calc(100% - 40px);
+  background: #ddeeff;
+  border-radius:100px;
+  overflow:hidden;
+  margin-left:10px;
+}
+.activeWaveformContainer {
+  overflow:hidden;
+  transition:0.2s;
+  z-index:1;
+  height: 49px;
+  background: #ddeeff;
+  border-radius:100px;
+  width: 49px;
+  margin-left:10px;
+}
+.playIcon{
+  margin-top:2px;
+  margin-left:2px;
+}
+.pauseIcon{
+   margin-top:2px;
+}
+.microphoneIcon{
+  font-size:17px;
+  margin-top:2px;
+}
+.PlayButton{
+  z-index:1;
+  transition:0.2s;
+  float:left;
+  margin-top:7px;
+  width: 35px;
+  height: 35px;
+  padding:0;
+  background: #ffffff00;
+  border-radius: 50%;
+  border: 2px solid #4070FF;
+  color:#4070FF;
+  outline: none;
+  cursor: pointer;
+  margin-left:7px;
+}
+.PlayButton:hover {
+    color: #2e4fb3;
+    border: 2px solid #2e4fb3;
+}
 
 .media-container{
   min-width:100px;
