@@ -1,0 +1,18 @@
+{
+    "typescript.check.npmIsInstalled": false,
+    "window.zoomLevel": 0,
+    "editor.minimap.enabled": false,
+    "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+},
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx"
+},
+    "eslint.alwaysShowStatus": true,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "files.autoSave": "onFocusChange",
+    "prettier.semi": false,
+    "prettier.tabWidth": 4
+}
