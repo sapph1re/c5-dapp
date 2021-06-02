@@ -266,16 +266,17 @@ class RecordForm extends React.Component {
   /** Submit the data */
   onSubmit = async e => {
     e.preventDefault();
-    // Clear the errors first
-    this.setState({
-      // rSpeciesError: ''
-    });
 
     if (this.state.actionState === 'textTyping') {
       let file = new File([this.state.textInput.target.value?this.state.textInput.target.value:''], "file.txt", {
       type: "text/plain",
       });
-      await this.uploadToIPFS(file)
+      try {
+        await this.uploadToIPFS(file)
+      }
+      catch{
+        return
+      }
     }
     // Extract and format the data
     let data = {
@@ -293,6 +294,7 @@ class RecordForm extends React.Component {
         this.props.onSubmit(data, () => {
           // When done, clear the form
           this.setState({
+            actionState:'',
             rFile: defaultFile,
             rLat: '',
             rLon: '',
@@ -313,6 +315,7 @@ class RecordForm extends React.Component {
                   <Webcam
                     audio={true}
                     ref={this.webcamVideoRef}
+                    videoConstraints={{ facingMode: "environment" }}
                     className="webCam"
                   />
             <button className="capturePhoto" type="button" onClick={this.toggleVideoCapture}><div className="outerCircle"></div></button>
@@ -324,6 +327,7 @@ class RecordForm extends React.Component {
                   <Webcam
                     audio={false}
                     ref={this.webcamRef}
+                    videoConstraints={{ facingMode: "environment" }}
                     screenshotFormat="image/jpeg"
                     className="webCam"
                   />

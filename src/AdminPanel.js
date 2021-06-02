@@ -6,10 +6,10 @@ import Map from './Map';
 import ReactAudioPlayer from 'react-audio-player';
 import ModalImage from "react-modal-image";
 
-
 const ipfsGatewayPrefix = 'https://ipfs.io/ipfs/';
 
 const GPSmult = 100000000;
+
 
 const fileTypes = ['Photo', 'Text', 'Audio', 'Video'] //enums are cast as numbers in solidity, so I get the index of the item in the array
 /**
@@ -70,25 +70,47 @@ class AdminPanel extends React.Component {
         inProgress: true
       }]
     );
-        // Add the record to the contract
-    this.props.contract.methods.addRecord(
-      { IPFS: record.rFile.hash, fileType:fileTypes.indexOf(record.rFile.type)},
-      Math.round(record.rLat*GPSmult),
-      Math.round(record.rLon*GPSmult)
-    ).send({
-      from: this.props.account
-    }).then(() => {
-      // cool
-      onSuccess();
-    }).catch(error => {
-      console.log(error);
-      // Remove the pending record
-      this.props.setRecords(
-        this.props.records.filter(rec => rec.inProgress !== true)
-      );
-    });
+
+    const transactionParameters = {
+        to: this.props.contractAddress,
+        from: this.props.account, 
+        'data': this.props.contract.methods.addRecord(
+          { IPFS: record.rFile.hash, fileType: fileTypes.indexOf(record.rFile.type) },
+          Math.round(record.rLat*GPSmult),
+          Math.round(record.rLon*GPSmult)).encodeABI()
+    };
+      
+      window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [transactionParameters],
+      }).then((hash) => {
+        this.getTransactionReceiptMined(hash).then(() => { this.props.onTransactionConfirmed()})
+        onSuccess();
+      }).catch(error => {
+        console.log(error);
+        // Remove the pending record
+        this.props.setRecords(
+          this.props.records.filter(rec => rec.inProgress !== true)
+        );
+      });
   }
 
+ async getTransactionReceiptMined (txHash) {
+    const self = this;
+    const transactionReceiptAsync = function(resolve) {
+        self.props.web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
+            if (error) {
+                resolve(error);
+            } else if (receipt == null) {
+                setTimeout(() => transactionReceiptAsync(resolve), 1000);
+            } else {
+                resolve(receipt);
+            }
+        });
+    };
+     return new Promise(transactionReceiptAsync);
+  };
+  
   render() {
     var records = this.props.records;
     var points = records.length > 0 ? records.map(rec => ({ "lat": parseFloat(rec.rLat), "lng": parseFloat(rec.rLon) })) : [];

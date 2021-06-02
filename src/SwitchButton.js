@@ -5,7 +5,7 @@ class SwitchButton extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentAccounts: ['0x0000000000000000000000000000000000000000'],
+      currentAccounts: [],
       isRightChain:null,
       metamaskInstalled:false
     }
@@ -14,20 +14,19 @@ class SwitchButton extends React.Component {
   componentDidMount() {
      if (window.ethereum) {
       this.setState({ metamaskInstalled: true })
-      this.isRightChainId()
+      setTimeout(() => { this.isRightChainId() 
       const account = window.ethereum.selectedAddress
-      if (account && account !== '') {
+       if (account && account !== '') {
+        this.props.onChangeAccount([account])
         this.setState({ currentAccounts: [account] })
-      }
+        }
+      }, 1000)
       window.ethereum.on('chainChanged', (_chainId) => {
          this.isRightChainId()
       })
        window.ethereum.on('accountsChanged', (accounts) => {
-           if (accounts.length === 0) {
-               this.setState({ currentAccounts: ['0x0000000000000000000000000000000000000000'] })
-           } else {
-               this.setState({ currentAccounts: accounts })
-           }
+           this.props.onChangeAccount(accounts)
+           this.setState({ currentAccounts: accounts })
       })
     }
   }
@@ -45,13 +44,13 @@ class SwitchButton extends React.Component {
         params: [
           this.props.chainParams
         ]
-      }).catch((err) => {
+       }).catch((err) => {
         console.log(err)
       })
     }
   }
 
-  connectToWallet= () => {
+  connectToWallet = () => {
     if (window.ethereum) {
        window.ethereum.request({ method: 'eth_requestAccounts' })
       .catch((err) => {
@@ -69,7 +68,7 @@ class SwitchButton extends React.Component {
         if (!this.state.isRightChain) {
             return <button className="button" onClick={this.switchChain}>Switch Chain</button>
         }
-        if (this.state.currentAccounts === ['0x0000000000000000000000000000000000000000']) {
+        if (this.state.currentAccounts.length===0) {
           return <button className="button" onClick={this.connectToWallet} >Connect to Metamask</button>
         }
         return <div className="button">{ this.state.currentAccounts[0].slice(0, 6) + '...' + this.state.currentAccounts[0].slice(this.state.currentAccounts[0].length - 4, this.state.currentAccounts[0].length)}</div>
