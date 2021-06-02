@@ -12,23 +12,31 @@ class SwitchButton extends React.Component {
   }
 
   componentDidMount() {
-     if (window.ethereum) {
-      this.setState({ metamaskInstalled: true })
-      setTimeout(() => { this.isRightChainId() 
-      const account = window.ethereum.selectedAddress
-       if (account && account !== '') {
-        this.props.onChangeAccount([account])
-        this.setState({ currentAccounts: [account] })
-        }
-      }, 1000)
-      window.ethereum.on('chainChanged', (_chainId) => {
-         this.isRightChainId()
-      })
-       window.ethereum.on('accountsChanged', (accounts) => {
-           this.props.onChangeAccount(accounts)
-           this.setState({ currentAccounts: accounts })
-      })
-    }
+    window.addEventListener("load", () => {
+      const init = () => {
+        this.setState({ metamaskInstalled: true })
+        setTimeout(() => {
+          this.isRightChainId()
+          const account = window.ethereum.selectedAddress
+          if (account && account !== '') {
+            this.props.onChangeAccount([account])
+            this.setState({ currentAccounts: [account] })
+          }
+        }, 1000)
+        window.ethereum.on('chainChanged', (_chainId) => {
+          this.isRightChainId()
+        })
+        window.ethereum.on('accountsChanged', (accounts) => {
+          this.props.onChangeAccount(accounts)
+          this.setState({ currentAccounts: accounts })
+        })
+      }
+      if (window.ethereum) {
+        init()
+        return
+      }
+      window.addEventListener('ethereum#initialized', init(), { once: true});
+    })
   }
 
   isRightChainId() {
@@ -63,7 +71,7 @@ class SwitchButton extends React.Component {
     return(
       <div> {(() => {
         if (!this.state.metamaskInstalled) {
-            return <a className="button metamask" onClick={this.switchChain} href="https://metamask.io/download" target="_blank" rel="noopener noreferrer" >Install Metamask</a>
+            return <a className="button metamask" href="https://metamask.io/download" target="_blank" rel="noopener noreferrer" >Install Metamask</a>
         }
         if (!this.state.isRightChain) {
             return <button className="button" onClick={this.switchChain}>Switch Chain</button>
