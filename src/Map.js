@@ -13,11 +13,24 @@ export class MapContainer extends React.Component {
         this.getBounds()
     }
 
+    componentDidUpdate(prevProps) {
+      if(this.props !== prevProps) 
+      {
+         this.getBounds();
+      }
+    } 
+
     getBounds() {
-        var points = this.props.points
-        var bounds = new this.props.google.maps.LatLngBounds();
-        for (var i = 0; i < points.length; i++) {
-            bounds.extend(points[i]);
+        const points = this.props.points
+        let bounds = new this.props.google.maps.LatLngBounds()
+        //default points
+        if (points.length === 0) {
+            bounds.extend({ "lat": 40.885091, "lng": -73.868285 })
+            bounds.extend({"lat":40.685091, "lng":-74.068285})
+        } else {
+            for (let i = 0; i < points.length; i++) {
+                bounds.extend(points[i])
+            }
         }
         this.setState({bounds})
     }
@@ -27,11 +40,11 @@ export class MapContainer extends React.Component {
             <Map google={this.props.google} 
                 bounds={this.state.bounds}
                 style={this.props.style}
+                containerStyle={this.props.containerStyle}
             >
                 {this.props.points.map((marker,i) =>
                     <Marker 
                         key={i}
-                        onClick={this.onMarkerClick}
                         position={{lat: marker.lat, lng: marker.lng}}
                     />
                 )} 

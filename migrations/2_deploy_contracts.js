@@ -1,5 +1,5 @@
-var Forest = artifacts.require("Forest");
+var TeamRecords = artifacts.require("./TeamRecords.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(Forest);
+  deployer.deploy(TeamRecords);
 };
