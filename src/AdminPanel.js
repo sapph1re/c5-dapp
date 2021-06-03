@@ -79,8 +79,9 @@ class AdminPanel extends React.Component {
           Math.round(record.rLat*GPSmult),
           Math.round(record.rLon*GPSmult)).encodeABI()
     };
-      
-      window.ethereum.request({
+    //givenProvider if Metamask on pc, currentProvider if Walltconnect on phones
+    const provider= this.props.web3.givenProvider? this.props.web3.givenProvider : this.props.web3.currentProvider
+      provider.request({
                 method: 'eth_sendTransaction',
                 params: [transactionParameters],
       }).then((hash) => {

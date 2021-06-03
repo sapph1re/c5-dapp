@@ -46,7 +46,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ web3: new Web3("https://rpc.c5v.network") }, () => { this.init() })
+    this.changeWeb3Provider("https://rpc.c5v.network")
   }
 
   changeAccount = (acc) => {
@@ -56,10 +56,14 @@ class App extends React.Component {
     }
   }
 
+  changeWeb3Provider = (provider) => {
+    this.setState({ web3: new Web3(provider) }, () => { this.init() })
+  }
+
   init() {
     // Instantiate the contract
     let contractAddress = TeamRecordsContract.networks[CHAIN_ID].address;
-     this.setState({ contractAddress: contractAddress })
+    this.setState({ contractAddress: contractAddress })
     const TeamRecords = new this.state.web3.eth.Contract(TeamRecordsContract.abi, contractAddress);
     // Initialize IPFS interface
     const IPFS = require('ipfs-api');
@@ -137,6 +141,7 @@ class App extends React.Component {
           networkId={CHAIN_ID}
           chainParams={CHAIN_PARAMS}
           onChangeAccount={this.changeAccount}
+          onChangeProvider={this.changeWeb3Provider}
         />
 
         <main className="container">
