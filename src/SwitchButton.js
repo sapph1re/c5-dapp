@@ -12,7 +12,7 @@ class SwitchButton extends React.Component {
   }
 
   componentDidMount() {
-      const init = () => {
+    const init = () => {
         const getProviderInfo = () => {
             this.setState({ metamaskInstalled: true })
             this.isRightChainId()
@@ -37,11 +37,11 @@ class SwitchButton extends React.Component {
           this.setState({ currentAccounts: accounts })
         })
       }
-      if (window.ethereum) {
+    if (window.ethereum) {
         init()
         return
-      }
-      window.addEventListener('ethereum#initialized', init(), { once: true});
+    }
+    window.addEventListener('ethereum#initialized', init, { once: true});
   }
 
   isRightChainId() {
