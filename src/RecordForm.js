@@ -148,7 +148,7 @@ class RecordForm extends React.Component {
       const contentType = block[0].split(":")[1];
       const realData = block[1].split(',')[1];
       const file_blob = this.b64toBlob(realData, contentType);
-      const file = new File([file_blob], "photo.jpeg", { type: "image/jpeg" })
+      const file = new File([file_blob], "photo.jpeg", { type: contentType })
       this.setState({ actionState: 'photoCaptured' })
       this.uploadToIPFS(file)
     }
