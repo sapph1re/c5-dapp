@@ -15,14 +15,14 @@ class SwitchButton extends React.Component {
     window.addEventListener("load", () => {
       const init = () => {
         this.setState({ metamaskInstalled: true })
-        setTimeout(() => {
-          this.isRightChainId()
+        window.ethereum.on('connect', () => {
+          this.isRightChainId();
           const account = window.ethereum.selectedAddress
           if (account && account !== '') {
             this.props.onChangeAccount([account])
             this.setState({ currentAccounts: [account] })
           }
-        }, 1000)
+        })
         window.ethereum.on('chainChanged', (_chainId) => {
           this.isRightChainId()
         })
@@ -73,11 +73,11 @@ class SwitchButton extends React.Component {
         if (!this.state.metamaskInstalled) {
             return <a className="button metamask" href="https://metamask.io/download" target="_blank" rel="noopener noreferrer" >Install Metamask</a>
         }
-        if (!this.state.isRightChain) {
-            return <button className="button" onClick={this.switchChain}>Switch Chain</button>
-        }
         if (this.state.currentAccounts.length===0) {
           return <button className="button" onClick={this.connectToWallet} >Connect to Metamask</button>
+        }
+        if (!this.state.isRightChain) {
+          return <button className="button" onClick={this.switchChain}>Switch Chain</button>
         }
         return <div className="button">{ this.state.currentAccounts[0].slice(0, 6) + '...' + this.state.currentAccounts[0].slice(this.state.currentAccounts[0].length - 4, this.state.currentAccounts[0].length)}</div>
       })()}</div>
