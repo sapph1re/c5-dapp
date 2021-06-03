@@ -12,24 +12,24 @@ class SwitchButton extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener("load", () => {
+  //  window.addEventListener("load", () => {
       const init = () => {
         const getProviderInfo = () => {
-           this.setState({ metamaskInstalled: true })
-           this.isRightChainId()
+            this.setState({ metamaskInstalled: true })
+            this.isRightChainId()
             const account = window.ethereum.selectedAddress
             if (account && account !== '') {
               this.props.onChangeAccount([account])
               this.setState({ currentAccounts: [account] })
             }
         }
-        if (!window.ethereum.isConnected()) {
+        //if (!window.ethereum.isConnected()) {
           window.ethereum.on('connect', () => {
-            getProviderInfo()
+            window.requestAnimationFrame(() => { getProviderInfo() })
           })
-        } else {
-          getProviderInfo()
-        }
+       // } else {
+          //getProviderInfo()
+        //}
         window.ethereum.on('chainChanged', (_chainId) => {
           this.isRightChainId()
         })
@@ -43,7 +43,7 @@ class SwitchButton extends React.Component {
         return
       }
       window.addEventListener('ethereum#initialized', init(), { once: true});
-    })
+   // })
   }
 
   isRightChainId() {
