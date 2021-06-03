@@ -14,8 +14,8 @@ class SwitchButton extends React.Component {
   componentDidMount() {
     window.addEventListener("load", () => {
       const init = () => {
-        this.setState({ metamaskInstalled: true })
         const getProviderInfo = () => {
+           this.setState({ metamaskInstalled: true })
            this.isRightChainId()
             const account = window.ethereum.selectedAddress
             if (account && account !== '') {
@@ -53,25 +53,19 @@ class SwitchButton extends React.Component {
   }
 
    switchChain = () => {
-    if (window.ethereum) {
-       window.ethereum.request({
+      window.ethereum.request({
         method: 'wallet_addEthereumChain',
-        params: [
-          this.props.chainParams
-        ]
-       }).catch((err) => {
-        console.log(err)
-      })
-    }
+        params: [this.props.chainParams]
+      }).catch((err) => {
+      console.log(err)
+    })
   }
 
   connectToWallet = () => {
-    if (window.ethereum) {
-       window.ethereum.request({ method: 'eth_requestAccounts' })
-      .catch((err) => {
-        console.log(err)
-      })
-    }
+    window.ethereum.request({ method: 'eth_requestAccounts' })
+    .catch((err) => {
+      console.log(err)
+    })
   }
 
   render() {
