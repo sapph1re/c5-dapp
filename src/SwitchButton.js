@@ -15,14 +15,21 @@ class SwitchButton extends React.Component {
     window.addEventListener("load", () => {
       const init = () => {
         this.setState({ metamaskInstalled: true })
-        window.ethereum.on('connect', () => {
-          this.isRightChainId();
-          const account = window.ethereum.selectedAddress
-          if (account && account !== '') {
-            this.props.onChangeAccount([account])
-            this.setState({ currentAccounts: [account] })
-          }
-        })
+        const getProviderInfo = () => {
+           this.isRightChainId()
+            const account = window.ethereum.selectedAddress
+            if (account && account !== '') {
+              this.props.onChangeAccount([account])
+              this.setState({ currentAccounts: [account] })
+            }
+        }
+        if (!window.ethereum.isConnected()) {
+          window.ethereum.on('connect', () => {
+            getProviderInfo()
+          })
+        } else {
+          getProviderInfo()
+        }
         window.ethereum.on('chainChanged', (_chainId) => {
           this.isRightChainId()
         })
