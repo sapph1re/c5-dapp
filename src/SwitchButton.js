@@ -8,7 +8,6 @@ class SwitchButton extends React.Component {
     this.state = {
       currentAccounts: [],
       isRightChain:null,
-      metamaskInstalled: false,
       ethereum:null,
       walletConnect:false
     }
@@ -17,7 +16,6 @@ class SwitchButton extends React.Component {
   componentDidMount() {
     const init = () => {
         const getProviderInfo = () => {
-            this.setState({ metamaskInstalled: true })
             this.isRightChainId()
             const account = window.ethereum.selectedAddress
             if (account && account !== '') {
@@ -45,8 +43,8 @@ class SwitchButton extends React.Component {
         init()
         return
     }
+    //no metamask detected, switch to Walletconnect
     this.setState({ walletConnect: true })
-    //window.addEventListener('ethereum#initialized', init, { once: true});
   }
 
   isRightChainId() {
@@ -105,7 +103,6 @@ class SwitchButton extends React.Component {
 
   disconnectWalletConnect = () => {
       if (this.state.ethereum) {
-       // this.setState({ ethereum: new WalletConnectProvider({ rpc: { 304: this.props.chainParams.rpcUrls[0] } }) })
         this.state.ethereum.disconnect()
         this.setState({ ethereum: null })
       }
@@ -117,10 +114,7 @@ class SwitchButton extends React.Component {
         if (this.state.walletConnect && this.state.currentAccounts.length===0) {
             return <button className="button" onClick={this.state.ethereum ? this.connectToWallet : this.connectToWalletconnect} >Connect to WalletConnect</button>
         }
-        if (!this.state.metamaskInstalled && !this.state.walletConnect) {
-            return <a className="button metamask" href="https://metamask.io/download" target="_blank" rel="noopener noreferrer" >Install Metamask</a>
-        }
-        if (this.state.currentAccounts.length===0) {
+        if (!this.state.walletConnect && this.state.currentAccounts.length===0) {
           return <button className="button" onClick={this.connectToWallet} >Connect to Metamask</button>
         }
         if (!this.state.isRightChain) {
