@@ -93,9 +93,6 @@ class RecordForm extends React.Component {
         "dataavailable",
         (({ data }) => {
           if (data.size > 0) {
-             console.log(data)
-           // this.setState({ recordedVideoChunks: data })
-           // const file_blob = new Blob(this.state.recordedVideoChunks, { type: "video/webm" });
             const file = new File([data], "video.webm", { type: "video/webm" })
             this.setState({ actionState: 'videoCaptured' })
             this.uploadToIPFS(file)
@@ -266,7 +263,6 @@ class RecordForm extends React.Component {
   /** Submit the data */
   onSubmit = async e => {
     e.preventDefault();
-
     if (this.state.actionState === 'textTyping') {
       let file = new File([this.state.textInput.target.value?this.state.textInput.target.value:''], "file.txt", {
       type: "text/plain",
@@ -303,14 +299,14 @@ class RecordForm extends React.Component {
           this.updateCoords();
         });
       }
-    });
+    })
   };
  
   render() {
     return (
       <form onSubmit={e => this.onSubmit(e)}>
 
-         {this.state.actionState === 'openVideoCapturing' ||this.state.actionState === 'videoCapturing' ?
+         { (this.state.actionState === 'openVideoCapturing' || this.state.actionState === 'videoCapturing') ?
           <div className="webCamContainer">
                   <Webcam
                     audio={true}
@@ -346,7 +342,7 @@ class RecordForm extends React.Component {
             />
             <div style={{ position: 'relative' }}>
 
-              <div className={this.state.actionState === 'textTyping' ? 'activePencilContainer' : 'PencilContainer'}>
+              <div className={ this.state.actionState === 'textTyping' ? 'activePencilContainer' : 'PencilContainer'}>
                 <button type="button" className="PlayButton" onClick={() => { this.closeAudio(); this.setState({ actionState: this.state.actionState === 'textTyping' ? '' : 'textTyping' }) }}>
                   <FontAwesomeIcon className="microphoneIcon" icon={faPencilAlt} /> 
                 </button> 
@@ -359,7 +355,7 @@ class RecordForm extends React.Component {
                 onStop={(blobUrl) => (this.captureAudioFile(blobUrl))}
                   render={({startRecording, stopRecording, mediaBlobUrl }) => (
 
-                      <div className={ this.state.actionState !== 'recorded' ? 'activeWaveformContainer' : 'WaveformContainer'} >
+                      <div className={ this.state.actionState === 'recorded' ? 'WaveformContainer' : 'activeWaveformContainer'} >
                         {this.state.actionState ==='recorded' ?
                           <div>
                             <button type="button" className="PlayButton" onClick={this.playAudio} >
@@ -370,7 +366,7 @@ class RecordForm extends React.Component {
                               </button>
                             </div> :
                              <div>
-                                    {this.state.actionState !=='recording' ?
+                              {this.state.actionState !=='recording' ?
                               <button type="button" className="PlayButton" onClick={() => { this.setState({ actionState: 'recording' }); startRecording() }}>
                                 <FontAwesomeIcon className="microphoneIcon" icon={faMicrophone} />
                               </button> :
@@ -405,19 +401,19 @@ class RecordForm extends React.Component {
 
               <div className={this.state.actionState === 'photoCaptured' ? 'activePhotoContainer' : 'PhotoContainer'}>
                 {this.state.actionState === 'photoCaptured' ? <FontAwesomeIcon className="checkPhoto" icon={faCheck} /> : null}
-                <button type="button" className="PlayButton" onClick={() => { this.removeFile(); this.setState({ actionState: 'photoCapturing' }) }} >
+                <button  type="button" className="PlayButton" onClick={() => { this.removeFile(); this.setState({ actionState: 'photoCapturing' }) }} >
                   <FontAwesomeIcon className="photoIcon" icon={faCamera} />
                 </button> 
               </div>
 
               <div className={this.state.actionState === 'videoCaptured' ? 'activePhotoContainer' : 'PhotoContainer'}>
                 {this.state.actionState === 'videoCaptured' ? <FontAwesomeIcon className="checkPhoto" icon={faCheck} /> : null}
-                <button type="button" className="PlayButton" onClick={() => { this.removeFile(); this.setState({ actionState: 'openVideoCapturing' }) }} >
+                <button  type="button" className="PlayButton" onClick={() => { this.removeFile(); this.setState({ actionState: 'openVideoCapturing' }) }} >
                   <FontAwesomeIcon className="videoIcon" icon={faVideo} />
                 </button> 
               </div>
 
-              <div className={this.state.actionState === 'fileCaptured' ? 'activeFileContainer' : 'FileContainer'}>
+              <div className={ this.state.actionState === 'fileCaptured' ? 'activeFileContainer' : 'FileContainer'}>
                 {this.state.actionState === 'fileCaptured' ?<div className="fileName">{this.state.rFileName}</div> : null}
                 <button
                   type="button"
@@ -453,7 +449,7 @@ class RecordForm extends React.Component {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={this.state.isUploading||(this.state.rFile==='' && this.state.actionState !== 'textTyping')}
+              disabled={ this.props.account === null || this.state.isUploading || (this.state.rFile==='' && this.state.actionState !== 'textTyping')}
               style={{ marginTop: 7, height:'38px' }}
             >
                {this.state.isUploading ? (

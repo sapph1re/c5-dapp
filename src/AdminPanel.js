@@ -84,8 +84,11 @@ class AdminPanel extends React.Component {
       provider.request({
                 method: 'eth_sendTransaction',
                 params: [transactionParameters],
-      }).then((hash) => {
-        this.getTransactionReceiptMined(hash).then(() => { this.props.onTransactionConfirmed()})
+      })
+      .then((hash) => {
+        this.getTransactionReceiptMined(hash).then(() => {
+          this.props.onTransactionConfirmed()
+        })
         onSuccess();
       }).catch(error => {
         console.log(error);
@@ -97,19 +100,19 @@ class AdminPanel extends React.Component {
   }
 
  async getTransactionReceiptMined (txHash) {
-    const self = this;
-    const transactionReceiptAsync = function(resolve) {
+   const self = this;
+   const transactionReceiptAsync = function (resolve) {
         self.props.web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
             if (error) {
-                resolve(error);
-            } else if (receipt == null) {
-                setTimeout(() => transactionReceiptAsync(resolve), 1000);
-            } else {
-                resolve(receipt);
+               return resolve(error)
             }
-        });
-    };
-     return new Promise(transactionReceiptAsync);
+            if (receipt == null) {
+               return setTimeout(() => transactionReceiptAsync(resolve), 1000)
+            }
+            resolve(receipt);
+        })
+    }
+    return new Promise(transactionReceiptAsync);
   };
   
   render() {
@@ -122,6 +125,7 @@ class AdminPanel extends React.Component {
           <Grid item xs={12} sm={5}>
             <h2 style={{ marginLeft: '20px' }}>Add a record</h2>
             <RecordForm
+              account={this.props.account}
               onValidate={this.recordValidate}
               onSubmit={this.recordSubmit}
               ipfs={this.props.ipfs}

@@ -7128,8 +7128,8 @@
     "304": {
       "events": {},
       "links": {},
-      "address": "0x5F519484E3eC6Ff5F0959A034eb32fe141BB7217",
-      "transactionHash": "0x4f6e873f8ccc982b80306e489cb4839635c74159bd4be2a61a83a7395eabf6d7"
+      "address": "0x72920d38f23E89d438F0FE0a269Fea7f70fa80fc",
+      "transactionHash": "0x0ce23daef1990da686e356d2b61ec9f018cd48d36bf361e45334b79cef82027a"
     },
     "5777": {
       "events": {},
@@ -7145,7 +7145,7 @@
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-06-01T18:16:17.692Z",
+  "updatedAt": "2021-06-04T10:58:57.047Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Roman Vinogradov <dev.romanv@gmail.com>",

@@ -50,10 +50,11 @@ class App extends React.Component {
   }
 
   changeAccount = (acc) => {
-    console.log(acc)
     if (acc.length > 0) {
-      this.setState({ account: acc[0] });
+      this.setState({ account: acc[0] })
+      return
     }
+    this.setState({ account: null })
   }
 
   changeWeb3Provider = (provider) => {

@@ -15,7 +15,7 @@ module.exports = {
     c5v: {
       provider: () => {
         return new HDWalletProvider(
-          "thumb image ethics scan laundry elder quick stereo ocean link seat hood",
+          "purse fortune ostrich paper mass casual bitter brisk put honey burger dial",
           "https://rpc.c5v.network"
         )
       },
