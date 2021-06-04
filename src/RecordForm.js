@@ -367,7 +367,7 @@ class RecordForm extends React.Component {
                                 <FontAwesomeIcon className="microphoneIcon" icon={faMicrophone} />
                               </button> :
                                       <div>
-                                        <div key={Math.random()} className="startRecording">
+                                        <div className="startRecording">
                                           <div className="blob" >
                                             <svg  width="100" height="100" viewBox="0 0 190 190" xmlns="http://www.w3.org/2000/svg">
                                               <path fill="#4070FF30" d="M65.5,-21.2C73.7,4,61.5,35.9,38.3,52.7C15.1,69.6,-19.1,71.5,-37.6,56.8C-56.1,42.2,-58.9,11.1,-50,-15C-41.2,-41.1,-20.6,-62.1,4,-63.4C28.7,-64.7,57.3,-46.3,65.5,-21.2Z" transform="translate(100 100)" />
