@@ -237,10 +237,6 @@ class RecordForm extends React.Component {
     this.setState({ actionState: '' })
   }
   closePhoto = () => {
-    if (this.state.rFile !== '') {
-      this.setState({ actionState: 'photoCaptured' })
-      return
-    }
     this.setState({ actionState: '' })
   }
   playAudio = () => {
