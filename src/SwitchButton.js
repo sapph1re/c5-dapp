@@ -16,7 +16,7 @@ class SwitchButton extends React.Component {
 
   componentDidMount() {
     const init = () => {
-        const getProviderInfo = () => {
+      const getProviderInfo = () => {
             this.isRightChainId()
             const account = window.ethereum.selectedAddress
             if (account && account !== '') {

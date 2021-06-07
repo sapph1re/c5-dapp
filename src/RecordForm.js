@@ -3,8 +3,8 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { ReactMediaRecorder } from "react-media-recorder";
-import WaveSurfer from 'wavesurfer.js';
+//import { ReactMediaRecorder } from "react-media-recorder";
+//import WaveSurfer from 'wavesurfer.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay,faPause,faMicrophone,faMicrophoneSlash,faTimes,faPencilAlt, faCheck, faCamera,faFile,faVideo } from '@fortawesome/free-solid-svg-icons'
 import Webcam from "react-webcam";
@@ -44,7 +44,7 @@ class RecordForm extends React.Component {
     this.updateCoords();
 
     //create waveform
-    this.waveform = WaveSurfer.create({
+   /* this.waveform = WaveSurfer.create({
       barWidth: 3,
       cursorWidth: 1,
       container: '#waveform',
@@ -62,17 +62,17 @@ class RecordForm extends React.Component {
     const self = this;
     self.waveform.on('finish', function () {
       self.setState({ playing: false });
-    });
+    });*/
   }
 
   updateCoords = () => {
     // input current coordinates into the form
-    window.navigator.geolocation.getCurrentPosition(pos => {
+   /* window.navigator.geolocation.getCurrentPosition(pos => {
       this.setState({
         rLat: pos.coords.latitude.toFixed(8),
         rLon: pos.coords.longitude.toFixed(8),
       });
-    });
+    });*/
   }
 
   /** Update the data in the state whenever an input value is changed */
@@ -345,7 +345,7 @@ class RecordForm extends React.Component {
                 <input onChange={(text)=>this.setState({ textInput: text })} placeholder="Input your notes" className="text-input" type="text" />
               </div>
               
-               <ReactMediaRecorder
+               {/* <ReactMediaRecorder
                 audio
                 blobPropertyBag={{ type: "audio/mpeg" }}
                 onStop={(blobUrl) => (this.captureAudioFile(blobUrl))}
@@ -393,7 +393,7 @@ class RecordForm extends React.Component {
                                 <div className={ this.state.actionState ==='recorded' ? 'activeWave' : 'Wave'} id="waveform" />
                                 <audio id="track" src={mediaBlobUrl}/>
                               </div>
-                          )}/> 
+                          )}/>  */}
 
               <div className={this.state.actionState === 'photoCaptured' ? 'activePhotoContainer' : 'PhotoContainer'}>
                 {this.state.actionState === 'photoCaptured' ? <FontAwesomeIcon className="checkPhoto" icon={faCheck} /> : null}
