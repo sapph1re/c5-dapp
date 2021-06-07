@@ -7,7 +7,8 @@ class SwitchButton extends React.Component {
     super(props)
     this.state = {
       currentAccounts: [],
-      isRightChain:null,
+      isRightChain: null,
+      wrongChain:false,
       ethereum:null,
       walletConnect:false
     }
@@ -77,6 +78,7 @@ class SwitchButton extends React.Component {
     })
     if (parseInt(provider.connector.chainId) !== parseInt(this.props.networkId) && provider.connector.accounts.length > 0) {
       await provider.disconnect()
+       this.setState({ wrongChain: true })
     }
     await provider.enable()
 
@@ -117,8 +119,8 @@ class SwitchButton extends React.Component {
     return(
       <div> {(() => {
 
-        if (this.state.walletConnect && !this.state.isRightChain && this.state.currentAccounts.length!==0) {
-            return <div className="button">Wrong Network</div>
+        if (this.state.wrongChain) {
+            return <div className="button">Wrong Network!</div>
         }
         
         if (this.state.walletConnect && this.state.currentAccounts.length===0) {
