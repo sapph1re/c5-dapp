@@ -75,7 +75,12 @@ class SwitchButton extends React.Component {
         304: this.props.chainParams.rpcUrls[0],
       }
     })
+    if (parseInt(provider.connector.chainId) !== parseInt(this.props.networkId) && provider.connector.accounts.length > 0) {
+      await provider.disconnect()
+    }
     await provider.enable()
+
+
     this.setState({ ethereum: provider })
     this.props.onChangeProvider(provider)
     provider.on("accountsChanged", (accounts) => {
@@ -92,7 +97,7 @@ class SwitchButton extends React.Component {
       this.setState({ currentAccounts: [] })
     })
 
-    this.setState({ isRightChain: parseInt(provider.chainId) ===  parseInt(this.props.networkId) })
+    this.setState({ isRightChain: parseInt(provider.chainId) === parseInt(this.props.networkId) })
     if (!provider.accounts[0]) {
       this.connectToWallet()
       return
@@ -111,8 +116,13 @@ class SwitchButton extends React.Component {
   render() {
     return(
       <div> {(() => {
+
+        if (this.state.walletConnect && !this.state.isRightChain && this.state.currentAccounts.length!==0) {
+            return <div className="button">Wrong Network</div>
+        }
+        
         if (this.state.walletConnect && this.state.currentAccounts.length===0) {
-            return <button className="button" onClick={this.state.ethereum ? this.connectToWallet : this.connectToWalletconnect} >Connect to WalletConnect</button>
+            return <button className="button" onClick={this.state.ethereum ? this.connectToWallet : this.connectToWalletconnect} >Connect</button>
         }
         if (!this.state.walletConnect && this.state.currentAccounts.length===0) {
           return <button className="button" onClick={this.connectToWallet} >Connect to Metamask</button>
