@@ -15,7 +15,6 @@ class SwitchButton extends React.Component {
   }
 
   componentDidMount() {
-    alert(window.navigator.userAgent)
     const init = () => {
         const getProviderInfo = () => {
             this.isRightChainId()
