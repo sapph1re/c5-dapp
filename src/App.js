@@ -7,7 +7,6 @@ import Web3 from 'web3'
 import './css/oswald.css'
 import './App.css'
 
-
 const GPSmult = 100000000;
 
 const CHAIN_ID = "304"

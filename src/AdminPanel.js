@@ -10,7 +10,6 @@ const ipfsGatewayPrefix = 'https://ipfs.io/ipfs/';
 
 const GPSmult = 100000000;
 
-
 const fileTypes = ['Photo', 'Text', 'Audio', 'Video'] //enums are cast as numbers in solidity, so I get the index of the item in the array
 /**
  * A list of records with a form to add a new record and edit/remove functionality
@@ -35,7 +34,8 @@ class AdminPanel extends React.Component {
       isEditUploading: false,
       isContractPaused: false,
       isPausing: false,
-      isUnpausing: false
+      isUnpausing: false,
+      textData:{}
     }
     this.editRecordInput = React.createRef()
   }
@@ -115,6 +115,14 @@ class AdminPanel extends React.Component {
     return new Promise(transactionReceiptAsync);
   };
   
+  async getText(hash) {
+    const response = await fetch(ipfsGatewayPrefix + hash)
+    const text = await response.text()
+    var localTextData = this.state.textData
+    localTextData[hash] = text
+    this.setState({ textData: localTextData })
+  }
+  
   render() {
     var records = this.props.records;
     var points = records.length > 0 ? records.map(rec => ({ "lat": parseFloat(rec.rLat), "lng": parseFloat(rec.rLon) })) : [];
@@ -181,7 +189,11 @@ class AdminPanel extends React.Component {
                             )
                           }
                           if (value.type === 'Text') {
-                            return (<iframe title="Text File" src={ipfsGatewayPrefix + value.hash} className="preview"></iframe>)
+                            if (!this.state.textData[value.hash]) {
+                              this.getText(value.hash)
+                              return (<div></div>)
+                            }
+                            return (<div className="preview textPreview">{this.state.textData[value.hash]}</div>)
                           }
                           if (value.type === 'Audio') {
                             return (<ReactAudioPlayer src={ipfsGatewayPrefix + value.hash} className="preview" controls />)

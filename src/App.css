@@ -275,6 +275,8 @@ background-color:rgb(212, 33, 33);
     border: 2px solid #2e4fb3;
 }
 
+body, html {height:inherit !important;}
+
 .media-container{
   min-width:100px;
   max-width:300px;
@@ -284,8 +286,12 @@ background-color:rgb(212, 33, 33);
   margin-bottom:5px;
   margin-top:5px;
 }
+.textPreview{
+  max-height:400px;
+  overflow-y:auto;
+}
 .preview{
-  border: 1px solid black;
+  border:none;
    width: 100%;
 }
 

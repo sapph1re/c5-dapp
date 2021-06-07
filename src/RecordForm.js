@@ -8,7 +8,7 @@ import WaveSurfer from 'wavesurfer.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay,faPause,faMicrophone,faMicrophoneSlash,faTimes,faPencilAlt, faCheck, faCamera,faFile,faVideo } from '@fortawesome/free-solid-svg-icons'
 import Webcam from "react-webcam";
-    
+
 const defaultFile = ''
  
  var recorder;
@@ -27,7 +27,7 @@ class RecordForm extends React.Component {
       rLat: '',
       rLon: '',
       recordFile: '',
-      textInput:'',
+      textInput: { target: {value:''}},
       playing: false,
       actionState:'textTyping',
       // flag when uploading to IPFS
@@ -235,9 +235,11 @@ class RecordForm extends React.Component {
 
   closeVideo = () => {
     this.setState({ actionState: '' })
+    this.removeFile()
   }
   closePhoto = () => {
     this.setState({ actionState: '' })
+    this.removeFile()
   }
   playAudio = () => {
     this.setState({ playing: !this.state.playing });
@@ -445,7 +447,10 @@ class RecordForm extends React.Component {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={ this.props.account === null || this.state.isUploading || (this.state.rFile==='' && this.state.actionState !== 'textTyping')}
+              disabled={this.props.account === null ||
+                this.state.isUploading ||
+                (this.state.textInput.target.value === '' && this.state.actionState === 'textTyping') ||
+                (this.state.rFile === defaultFile && this.state.actionState !== 'textTyping')}
               style={{ marginTop: 7, height:'38px' }}
             >
                {this.state.isUploading ? (
