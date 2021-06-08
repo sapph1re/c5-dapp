@@ -168,7 +168,7 @@ class AdminPanel extends React.Component {
                   type: 'datetime'
                 },
                 {
-                  name: 'File',
+                  name: 'Record',
                   prop: 'rFile',
                   editable: false,
                   type: 'custom',
