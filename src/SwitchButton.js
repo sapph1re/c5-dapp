@@ -7,10 +7,9 @@ class SwitchButton extends React.Component {
     super(props)
     this.state = {
       currentAccounts: [],
-      isRightChain: null,
+      isRightChain: true,
       wrongChain:false,
-      ethereum:null,
-      walletConnect:false
+      ethereum:null
     }
   }
 
@@ -71,17 +70,13 @@ class SwitchButton extends React.Component {
   }
    
   connectToWalletconnect = async () => {
-    const provider = new WalletConnectProvider({
+    var provider = new WalletConnectProvider({
       rpc: {
         304: this.props.chainParams.rpcUrls[0],
       }
     })
-    if (parseInt(provider.connector.chainId) !== parseInt(this.props.networkId) && provider.connector.accounts.length > 0) {
-      await provider.disconnect()
-       this.setState({ wrongChain: true })
-    }
-    await provider.enable()
 
+    await provider.enable()
 
     this.setState({ ethereum: provider })
     this.props.onChangeProvider(provider)
@@ -98,8 +93,16 @@ class SwitchButton extends React.Component {
       this.props.onChangeAccount([])
       this.setState({ currentAccounts: [] })
     })
+      
+    if (parseInt(provider.chainId) !== parseInt(this.props.networkId)) {
+      await provider.disconnect()
+      provider = null
+      this.setState({ ethereum: null })
+      this.setState({ isRightChain: false })
+      return
+    }
 
-    this.setState({ isRightChain: parseInt(provider.chainId) === parseInt(this.props.networkId) })
+    this.setState({ isRightChain: true })
     if (!provider.accounts[0]) {
       this.connectToWallet()
       return
@@ -119,10 +122,9 @@ class SwitchButton extends React.Component {
     return(
       <div> {(() => {
 
-        if (this.state.wrongChain) {
+        if (!this.state.isRightChain && this.state.walletConnect) {
             return <div className="button">Wrong Network!</div>
         }
-        
         if (this.state.walletConnect && this.state.currentAccounts.length===0) {
             return <button className="button" onClick={this.state.ethereum ? this.connectToWallet : this.connectToWalletconnect} >Connect</button>
         }
