@@ -16,7 +16,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 function formatDate(timestamp) {
   const addZero = i => (i < 10 ? "0" + i : i);
-  let d = new Date(timestamp * 1000);
+  var timezone = new Date().getTimezoneOffset();
+  let d = new Date(timestamp * 1000 - timezone*60*1000);
   let day = addZero(d.getUTCDate());
   let month = addZero(d.getUTCMonth() + 1);
   let year = addZero(d.getUTCFullYear());
