@@ -1,6 +1,7 @@
 import React from 'react';
 import './css/switch-button.css';
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import Web3 from 'web3'
 
 class SwitchButton extends React.Component {
   constructor(props) {
@@ -80,6 +81,7 @@ class SwitchButton extends React.Component {
 
     this.setState({ ethereum: provider })
     this.props.onChangeProvider(provider)
+
     provider.on("accountsChanged", (accounts) => {
       this.props.onChangeAccount(accounts)
        this.setState({ currentAccounts: accounts })
@@ -93,8 +95,12 @@ class SwitchButton extends React.Component {
       this.props.onChangeAccount([])
       this.setState({ currentAccounts: [] })
     })
-      
-    if (parseInt(provider.chainId) !== parseInt(this.props.networkId)) {
+
+    const web3 = new Web3(provider)
+    const chainId = await web3.eth.getChainId()
+    const accounts = await web3.eth.getAccounts()
+
+    if (parseInt(chainId) !== parseInt(this.props.networkId)) {
       await provider.disconnect()
       provider = null
       this.setState({ ethereum: null })
@@ -103,12 +109,12 @@ class SwitchButton extends React.Component {
     }
 
     this.setState({ isRightChain: true })
-    if (!provider.accounts[0]) {
+    if (accounts.length === 0) {
       this.connectToWallet()
       return
     }
-    this.props.onChangeAccount(provider.accounts)
-    this.setState({ currentAccounts: provider.accounts })
+    this.props.onChangeAccount(accounts)
+    this.setState({ currentAccounts: accounts })
   }
 
   disconnectWalletConnect = () => {
