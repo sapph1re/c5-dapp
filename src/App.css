@@ -275,7 +275,9 @@ background-color:rgb(212, 33, 33);
     border: 2px solid #2e4fb3;
 }
 .pdf{
-  width:calc(100% + 17px) !important;
+  margin-top:-2px;
+  margin-left:-3px;
+  width:calc(100% + 27px) !important;
   overflow:hidden !important;
   height:300px;
 }
@@ -283,7 +285,7 @@ iframe::-webkit-scrollbar {
   display: none; 
 }
 .pdfWrapper{
-  width:100%;
+  width:calc(100% - 10px);
   overflow:hidden;
 }
 .PdfLink{
