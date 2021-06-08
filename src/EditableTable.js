@@ -65,7 +65,12 @@ const CustomTableCell = withStyles(theme => ({
  * @param handleRemove - function to be called to remove a row from the data
  */
 class EditableTable extends React.Component {
-
+ constructor(props) {
+    super(props)
+    this.state = {
+      sort:false
+    }
+  }
   /** Render the table header with given data columns */
   renderHeaderRow() {
     const { dataStructure } = this.props;
@@ -73,7 +78,7 @@ class EditableTable extends React.Component {
     return dataStructure.map((dataColumn, columnIdx) => {
       return (
         <CustomTableCell key={`thc-${columnIdx}`}>
-          {dataColumn.name}
+          {columnIdx === 0 ? <button onClick={() => { this.setState({sort:!this.state.sort})}} className="sortArrow">{dataColumn.name} {this.state.sort?<span>&#9650;</span>:<span>&#9660;</span>}</button> : <span>{dataColumn.name}</span>}
         </CustomTableCell>
       );
     });
@@ -159,6 +164,17 @@ class EditableTable extends React.Component {
   /** Render the table body with all the data, editable data fields and action buttons */
   renderTableBody() {
     const { data, dataStructure } = this.props;
+    //console.log(data,dataStructure)
+    if (this.state.sort) {
+      data.sort((a, b) => {
+        return b[dataStructure[0].prop] - a[dataStructure[0].prop];
+      })
+    }
+    else {
+      data.sort((a, b) => {
+        return a[dataStructure[0].prop] - b[dataStructure[0].prop];
+      })
+    }
     return data.map((dataRow, rowIdx) => {
       if (dataRow.inProgress) {
         return (

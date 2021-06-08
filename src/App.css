@@ -276,7 +276,19 @@ background-color:rgb(212, 33, 33);
 }
 
 body, html {height:inherit !important;}
-
+.sortArrow{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 500;
+  font-size:14px;
+  transition: 0.2s;
+  background-color:transparent;
+  color:rgb(255, 255, 255);
+  border:none;
+  outline:none;
+}
+.sortArrow:hover{
+  color:rgb(133, 133, 133);
+}
 .media-container{
   min-width:100px;
   max-width:300px;
