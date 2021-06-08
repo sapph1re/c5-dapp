@@ -23,6 +23,7 @@ contract TeamRecords {
         File rFile;
         int256 rLat;
         int256 rLon;
+        uint256 index;
     }
 
     /**
@@ -33,8 +34,10 @@ contract TeamRecords {
     /**
      * @dev Events:
      * {LogRecordAdded} - emits on addRecord
+     * {LogRecordRemoved} - emits on removeRecord
      */
     event LogRecordAdded();
+    event LogRecordRemoved(address from, Record record);
 
     receive() external payable {
         revert("Payments are not accepted");
@@ -56,8 +59,25 @@ contract TeamRecords {
         File memory _rFile,
         int256 _rLat,
         int256 _rLon
-    ) public {
-        records.push(Record(block.timestamp, _rFile, _rLat, _rLon));
+    ) external {
+        records.push(
+            Record(block.timestamp, _rFile, _rLat, _rLon, records.length)
+        );
         emit LogRecordAdded();
+    }
+
+    /**
+     * @dev removeRecord
+     * Removes the record from the contract, emits {LogRecordRemoved}
+     */
+    function removeRecord(uint256 index) external {
+        require(
+            index < records.length,
+            "The index is bigger than the array's length"
+        );
+        emit LogRecordRemoved(msg.sender, records[index]);
+        records[index] = records[records.length - 1];
+        records[index].index = index;
+        records.pop();
     }
 }
