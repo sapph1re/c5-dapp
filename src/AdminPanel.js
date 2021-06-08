@@ -10,7 +10,6 @@ const ipfsGatewayPrefix = 'https://ipfs.io/ipfs/';
 
 const GPSmult = 100000000;
 
-const fileTypes = ['Photo', 'Text', 'Audio', 'Video'] //enums are cast as numbers in solidity, so I get the index of the item in the array
 /**
  * A list of records with a form to add a new record and edit/remove functionality
  * @param records - list of records
@@ -75,7 +74,7 @@ class AdminPanel extends React.Component {
         to: this.props.contractAddress,
         from: this.props.account, 
         'data': this.props.contract.methods.addRecord(
-          { IPFS: record.rFile.hash, fileType: fileTypes.indexOf(record.rFile.type) },
+          { IPFS: record.rFile.hash, fileType: this.props.fileTypes.indexOf(record.rFile.type) },
           Math.round(record.rLat*GPSmult),
           Math.round(record.rLon*GPSmult)).encodeABI()
     };
@@ -116,6 +115,7 @@ class AdminPanel extends React.Component {
   };
   
   async getText(hash) {
+    console.log(hash)
     const response = await fetch(ipfsGatewayPrefix + hash)
     const text = await response.text()
     var localTextData = this.state.textData
@@ -194,6 +194,10 @@ class AdminPanel extends React.Component {
                               return (<div></div>)
                             }
                             return (<div className="preview textPreview">{this.state.textData[value.hash]}</div>)
+                          }
+                          if (value.type === 'PDF') {
+                            return (<div className='pdfWrapper' ><a className="PdfLink" href={ipfsGatewayPrefix + value.hash} target="_blank" rel="noopener noreferrer"/><embed scrolling="no" className="pdf preview" src={ipfsGatewayPrefix + value.hash + '#toolbar=0&navpanes=0'}/></div>)
+                             return (<div className='pdfWrapper' ><a className="PdfLink" href={ipfsGatewayPrefix + value.hash} target="_blank" rel="noopener noreferrer"/><iframe scrolling="no" title="iframe" className="pdf preview" src={ipfsGatewayPrefix + value.hash + '#toolbar=0&navpanes=0'}/></div>)
                           }
                           if (value.type === 'Audio') {
                             return (<ReactAudioPlayer src={ipfsGatewayPrefix + value.hash} className="preview" controls />)

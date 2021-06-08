@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
  * @author Roman Vinogradov <dev.romanv@gmail.com>
  */
 contract TeamRecords {
-    enum FileType {Photo, Text, Audio, Video}
+    enum FileType {Photo, Text, Audio, Video, PDF}
     struct File {
         string IPFS;
         FileType fileType;

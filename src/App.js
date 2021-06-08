@@ -11,7 +11,7 @@ const GPSmult = 100000000;
 
 const CHAIN_ID = "304"
 
-const fileTypes = ['Photo', 'Text', 'Audio', 'Video'] //enums are cast as numbers in solidity, so I get the index of the item in the array
+const fileTypes = ['Photo', 'Text', 'Audio', 'Video', 'PDF'] //enums are cast as numbers in solidity, so I get the index of the item in the array
 
 const CHAIN_PARAMS = {
   chainId: '0x'+parseInt(CHAIN_ID).toString(16),
@@ -146,6 +146,7 @@ class App extends React.Component {
 
         <main className="container">
           <AdminPanel
+            fileTypes={fileTypes}
             records={this.state.records}
             setRecords={this.setRecords}
             web3={this.state.web3}

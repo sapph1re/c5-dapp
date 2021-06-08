@@ -274,8 +274,28 @@ background-color:rgb(212, 33, 33);
     color: #2e4fb3;
     border: 2px solid #2e4fb3;
 }
-
-body, html {height:inherit !important;}
+.pdf{
+  width:calc(100% + 17px) !important;
+  overflow:hidden !important;
+  height:300px;
+}
+iframe::-webkit-scrollbar {
+  display: none; 
+}
+.pdfWrapper{
+  width:100%;
+  overflow:hidden;
+}
+.PdfLink{
+  position:relative;
+  display:block; 
+  z-index:5;
+  width:100%;
+  height:300px;
+  margin-bottom:-300px;
+  background-color: rgba(255, 255, 255, 0);
+}
+body, html {height:inherit !important; }
 .sortArrow{
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 500;

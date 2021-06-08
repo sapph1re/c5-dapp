@@ -188,7 +188,7 @@ class RecordForm extends React.Component {
       }
       this.setState({ isUploading: true, rFileName: file.name });
       // Acceptable file types
-      const fileTypes = ['jpg', 'jpeg', 'png', 'txt', 'mp3', 'mp4','webm'];
+      const fileTypes = ['jpg', 'jpeg', 'png', 'txt', 'pdf', 'mp3', 'mp4','webm'];
       // Get file extention
       const extension = file.name.split('.').pop().toLowerCase();
       if (!fileTypes.includes(extension)) {
@@ -210,6 +210,9 @@ class RecordForm extends React.Component {
         }
         if (extension === 'txt') {
           return 'Text'
+        }
+        if (extension === 'pdf') {
+          return 'PDF'
         }
         return 'Photo'
       }
