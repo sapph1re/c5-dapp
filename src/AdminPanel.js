@@ -62,7 +62,7 @@ class AdminPanel extends React.Component {
     // It will update to normal automatically when the transaction completes
     this.props.setRecords(
       [...this.props.records, {
-        rTime: null,
+        rTime: Date.now,
         rFile: { hash: record.rFile.hash, type: record.rFile.type },
         rLat: record.rLat,
         rLon: record.rLon,
