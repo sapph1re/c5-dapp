@@ -197,7 +197,7 @@ class AdminPanel extends React.Component {
                             return (<div className="preview textPreview">{this.state.textData[value.hash]}</div>)
                           }
                           if (value.type === 'PDF') {
-                            return (<div className='pdfWrapper' ><a className="PdfLink" href={ipfsGatewayPrefix + value.hash} target="_blank" rel="noopener noreferrer"/><embed scrolling="no" frameBorder="5" className="pdf preview" src={ipfsGatewayPrefix + value.hash + '#toolbar=0&navpanes=0'}/></div>)
+                            return (<embed scrolling="no" frameBorder="5" className="pdf preview" src={`http://docs.google.com/gview?embedded=true&url=${ipfsGatewayPrefix + value.hash}&amp;embedded=true`}/>)
                           }
                           if (value.type === 'Audio') {
                             return (<ReactAudioPlayer src={ipfsGatewayPrefix + value.hash} className="preview" controls />)
