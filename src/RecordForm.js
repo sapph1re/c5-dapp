@@ -32,7 +32,8 @@ class RecordForm extends React.Component {
       actionState:'textTyping',
       // flag when uploading to IPFS
       isUploading: false,
-      recordedVideoChunks:''
+      recordedVideoChunks: '',
+      errorMessage:''
     };
     this.webcamRef = React.createRef();
     this.webcamVideoRef = React.createRef();
@@ -173,7 +174,9 @@ class RecordForm extends React.Component {
     e.preventDefault();
     let file = e.target.files[0];
     this.setState({ actionState: 'fileCaptured' });
-    this.uploadToIPFS(file)
+    this.uploadToIPFS(file).catch((err) => {
+      console.log(err)
+    })
   };
 
   /**
@@ -186,7 +189,7 @@ class RecordForm extends React.Component {
       if (!file) {
         return reject(new Error("No file passed to the 'uploadToIPFS' function"))
       }
-      this.setState({ isUploading: true, rFileName: file.name });
+      this.setState({ isUploading: true, rFileName: file.name,  errorMessage: '' });
       // Acceptable file types
       const fileTypes = ['jpg', 'jpeg', 'png', 'txt', 'pdf', 'mp3', 'mp4','webm'];
       // Get file extention
@@ -194,7 +197,9 @@ class RecordForm extends React.Component {
       if (!fileTypes.includes(extension)) {
         this.setState({
           isUploading: false,
-          rFileName: ''
+          rFileName: '',
+          actionState:'',
+          errorMessage: "Wrong file extension. The acceptable file extentions are: " + fileTypes.toString()
         })
         return reject(new Error("Wrong file extension"))
       }
@@ -214,7 +219,6 @@ class RecordForm extends React.Component {
         if (extension === 'pdf') {
           return 'PDF'
         }
-        return 'Photo'
       }
       let reader = new window.FileReader();
       reader.readAsArrayBuffer(file);
@@ -425,6 +429,7 @@ class RecordForm extends React.Component {
               </div>
             </div>
           </Grid>
+          {this.state.errorMessage !== '' ? <div className="errorMessage">{ this.state.errorMessage }</div>:null}
           <Grid item xs={12}>
             <TextField
               name="rLat"
