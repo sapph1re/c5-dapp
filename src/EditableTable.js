@@ -68,7 +68,7 @@ class EditableTable extends React.Component {
  constructor(props) {
     super(props)
     this.state = {
-      sort:false
+      sort:true
     }
   }
   /** Render the table header with given data columns */
@@ -184,8 +184,8 @@ class EditableTable extends React.Component {
           >
             {dataStructure.map((dataColumn, columnIdx) => (
               <CustomTableCell key={`trc-${columnIdx}`}  >
-                {columnIdx === 0 ? <CircularProgress size={20} /> : null}
-                {dataColumn.type === 'custom'
+                {columnIdx === 0 ? <CircularProgress size={20} /> : 
+                dataColumn.type === 'custom'
                   ? dataColumn.renderField(dataRow[dataColumn.prop])
                   : dataRow[dataColumn.prop]}
               </CustomTableCell>

@@ -62,7 +62,7 @@ class AdminPanel extends React.Component {
     // It will update to normal automatically when the transaction completes
     this.props.setRecords(
       [...this.props.records, {
-        rTime: Date.now,
+        rTime: Math.floor(Date.now() / 1000),
         rFile: { hash: record.rFile.hash, type: record.rFile.type },
         rLat: record.rLat,
         rLon: record.rLon,
@@ -76,7 +76,8 @@ class AdminPanel extends React.Component {
         'data': this.props.contract.methods.addRecord(
           { IPFS: record.rFile.hash, fileType: this.props.fileTypes.indexOf(record.rFile.type) },
           Math.round(record.rLat*GPSmult),
-          Math.round(record.rLon*GPSmult)).encodeABI()
+          Math.round(record.rLon * GPSmult)).encodeABI(),
+        gasPrice: '0'
     };
     //givenProvider if Metamask on pc, currentProvider if Walltconnect on phones
     const provider= this.props.web3.givenProvider? this.props.web3.givenProvider : this.props.web3.currentProvider
@@ -115,7 +116,6 @@ class AdminPanel extends React.Component {
   };
   
   async getText(hash) {
-    console.log(hash)
     const response = await fetch(ipfsGatewayPrefix + hash)
     const text = await response.text()
     var localTextData = this.state.textData
@@ -133,6 +133,7 @@ class AdminPanel extends React.Component {
           <Grid item xs={12} sm={5}>
             <h2 style={{ marginLeft: '20px' }}>Add a record</h2>
             <RecordForm
+              isRightChain={this.props.isRightChain}
               account={this.props.account}
               onValidate={this.recordValidate}
               onSubmit={this.recordSubmit}

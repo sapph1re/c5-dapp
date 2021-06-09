@@ -39,6 +39,7 @@ class App extends React.Component {
       ipfs: null,
       // the list of records
       records: [],
+      isRightChain:false,
       // the interface tab that is currently open
       activeTab: 0
     };
@@ -54,6 +55,10 @@ class App extends React.Component {
       return
     }
     this.setState({ account: null })
+  }
+
+ changeNetwork = (isRightNet) => {
+    this.setState({ isRightChain: isRightNet })
   }
 
   changeWeb3Provider = (provider) => {
@@ -140,6 +145,7 @@ class App extends React.Component {
         <SwitchButton
           networkId={CHAIN_ID}
           chainParams={CHAIN_PARAMS}
+          onChangeNetwork={this.changeNetwork}
           onChangeAccount={this.changeAccount}
           onChangeProvider={this.changeWeb3Provider}
         />
@@ -155,6 +161,7 @@ class App extends React.Component {
             account={this.state.account}
             ipfs={this.state.ipfs}
             onTransactionConfirmed={this.loadRecords}
+            isRightChain={this.state.isRightChain}
           />
         </main>
       </div>

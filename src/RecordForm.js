@@ -450,7 +450,9 @@ class RecordForm extends React.Component {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={this.props.account === null ||
+              disabled={
+                !this.props.isRightChain ||
+                this.props.account === null ||
                 this.state.isUploading ||
                 (this.state.textInput.target.value === '' && this.state.actionState === 'textTyping') ||
                 (this.state.rFile === defaultFile && this.state.actionState !== 'textTyping')}
@@ -458,7 +460,7 @@ class RecordForm extends React.Component {
             >
                {this.state.isUploading ? (
                 <CircularProgress size={20} style={{ color: '#606060' }}  />
-              ) : <span>Add</span>}
+              ) : <span>{ this.props.isRightChain.toString() }Add</span>}
             </Button>
           </Grid>
         </Grid>

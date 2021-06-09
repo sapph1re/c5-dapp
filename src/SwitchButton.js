@@ -52,6 +52,7 @@ class SwitchButton extends React.Component {
     const chain = parseInt(window.ethereum.chainId)
     // ganache always returns 1337 as chain id, so we need to ignore this check if we are in local developement mode
     this.setState({ isRightChain: chain === 1337 ? true : chain === parseInt(this.props.networkId) })
+    this.props.onChangeNetwork(this.state.isRightChain)
   }
 
    switchChain = () => {
@@ -89,6 +90,7 @@ class SwitchButton extends React.Component {
 
     provider.on("chainChanged", (chainId) => {
       this.setState({ isRightChain: chainId === parseInt(this.props.networkId) })
+      this.props.onChangeNetwork(this.state.isRightChain)
     })
 
     provider.on("disconnect", () => {
@@ -105,6 +107,7 @@ class SwitchButton extends React.Component {
       provider = null
       this.setState({ ethereum: null })
       this.setState({ isRightChain: false })
+      this.props.onChangeNetwork(this.state.isRightChain)
       return
     }
 
