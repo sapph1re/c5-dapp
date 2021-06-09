@@ -460,7 +460,7 @@ class RecordForm extends React.Component {
             >
                {this.state.isUploading ? (
                 <CircularProgress size={20} style={{ color: '#606060' }}  />
-              ) : <span>{ this.props.isRightChain.toString() }Add</span>}
+              ) : <span>Add</span>}
             </Button>
           </Grid>
         </Grid>
