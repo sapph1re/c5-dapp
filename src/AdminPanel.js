@@ -6,7 +6,7 @@ import Map from './Map';
 import ReactAudioPlayer from 'react-audio-player';
 import ModalImage from "react-modal-image";
 
-const ipfsGatewayPrefix = 'http://ipfs.io/ipfs/';
+const ipfsGatewayPrefix = 'https://ipfs.io/ipfs/';
 
 const GPSmult = 100000000;
 
