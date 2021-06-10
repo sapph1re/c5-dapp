@@ -107,12 +107,12 @@ class SwitchButton extends React.Component {
       provider = null
       this.setState({ ethereum: null })
       this.setState({ isRightChain: false })
-      this.props.onChangeNetwork(this.state.isRightChain)
+      this.props.onChangeNetwork(false)
       return
     }
 
     this.setState({ isRightChain: true })
-    this.props.onChangeNetwork(this.state.isRightChain)
+    this.props.onChangeNetwork(true)
     if (accounts.length === 0) {
       this.connectToWallet()
       return
