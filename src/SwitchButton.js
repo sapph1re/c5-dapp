@@ -112,6 +112,7 @@ class SwitchButton extends React.Component {
     }
 
     this.setState({ isRightChain: true })
+    this.props.onChangeNetwork(this.state.isRightChain)
     if (accounts.length === 0) {
       this.connectToWallet()
       return
